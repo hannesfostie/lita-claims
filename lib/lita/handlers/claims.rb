@@ -49,7 +49,8 @@ module Lita
         property, environment = response.matches.first
         environment ||= 'default'
         environment_string = " (#{environment})" if environment != 'default'
-        if property && Claim.create(property, claimer, environment)
+        if property && !Claim.exists?(property, environment)
+          Claim.create(property, claimer, environment)
           reply = "#{property}#{environment_string} was claimed by #{claimer}."
         else
           existing_claimer = Claim.read(property, environment)
